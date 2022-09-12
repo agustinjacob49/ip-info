@@ -1,0 +1,29 @@
+{
+  "name": "ip-info",
+  "version": "1.0.0",
+  "description": "ip info api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"src/*.{ts,tsx}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agustinjacob49/ip-info.git"
+  },
+  "author": "agustinjacob49",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agustinjacob49/ip-info/issues"
+  },
+  "homepage": "https://github.com/agustinjacob49/ip-info#readme",
+  "dependencies": {
+    "typescript": "^4.8.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "eslint": "^8.23.1",
+    "ts-node-dev": "^2.0.0"
+  }
+}
