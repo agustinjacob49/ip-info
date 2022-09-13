@@ -1,6 +1,5 @@
 import { createContainer, asClass } from 'awilix';
 import { scopePerRequest } from 'awilix-express';
-import { IpInfoController } from './controllers/ipInfo.controller';
 import { CurrencyService } from './services/currency.service';
 import { GeolocationService } from './services/geolocation.service';
 import express from 'express';
