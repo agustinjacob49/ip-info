@@ -1,24 +1,21 @@
-import { CountryRepository } from "./repositories/impl/country.repository";
+import { CountryRepository } from './repositories/impl/country.repository';
 
 /*
     Manage the comunication with the db layer 
 */
 export class PersistanceService {
+    constructor(private readonly countryRepository: CountryRepository){
 
-    save(data: any): any {
+    }
+
+    async save(code: string): Promise<any> {
         //FOO implement
-        const a = new CountryRepository().saveData(data);
+        return await this.countryRepository.saveData(code);
     }
 
 
-    get(code: string): any {
+    async get(code: string): Promise<any> {
         //FOO implement
-        const a = new CountryRepository().getByCode(code);
-        return {
-            "isp": "Telecom Argentina S.A",
-            "org": "Fibertel",
-            "as": "AS7303 Telecom Argentina S.A.",
-            "asname": "Telecom Argentina S.A.",
-        };
+        return await this.countryRepository.getByCode(code);
     }
 }
