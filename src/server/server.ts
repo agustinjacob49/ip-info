@@ -18,7 +18,7 @@ app.use(express.json());
 loadDependencies(app);
 
 //Controllers IOC
-app.use(loadControllers('../controllers/*.ts', { cwd : __dirname }));
+app.use(loadControllers('../controllers/*.ts', { cwd: __dirname }));
 
 app.get('/ping', (req, res) => {
     res.send("pong");

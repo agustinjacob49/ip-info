@@ -6,44 +6,38 @@ export class CountryRepository {
         const params: GetItemInput = {
             TableName: 'countries',
             Key: {
-                'code': {'S': code}
+                'code': { 'S': code }
             },
             ProjectionExpression: 'code, longest_distance_req, #name',
-            ExpressionAttributeNames: {'#name': 'name'},
+            ExpressionAttributeNames: { '#name': 'name' },
         };
-        const result = null;
 
         try {
             const result = await SingletonDB.getInstance().ddb.getItem(params);
             console.log(result);
+            return result;
         } catch (err) {
-            console.log(err);
+            return err;
         }
-
-
-        return result;
-    } 
+    }
 
 
     public async saveData(code: string) {
         const params: GetItemInput = {
             TableName: 'countries',
             Key: {
-                'code': {'S': code}
+                'code': { 'S': code }
             },
             ProjectionExpression: 'code, longest_distance_req, #name',
-            ExpressionAttributeNames: {'#name': 'name'},
+            ExpressionAttributeNames: { '#name': 'name' },
         };
-        const result = null;
 
         try {
             const result = await SingletonDB.getInstance().ddb.getItem(params);
-            console.log(result);
+            return result;
         } catch (err) {
             console.log(err);
+            return err;
         }
-
-
-        return result;
-    } 
+    }
 }

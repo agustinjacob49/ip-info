@@ -24,11 +24,11 @@ export class IPInfoService {
             const currencyData = await this.currencyService.getCurrencyData(currency);
 
             //Update statistics
-            await this.persistanceService.save(geoLocationData);
+            //await this.persistanceService.save(geoLocationData);
 
             return {
                 ...geoLocationData,
-                ...currencyData
+                currencies : currencyData,
             };
         } catch(err) {
             console.log(err);

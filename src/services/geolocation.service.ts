@@ -1,6 +1,6 @@
 import { LONG_NY, LAT_NY } from '../common/constants';
 import { getDistanceTwoPoints } from '../common/utils';
-import { IPApiClient } from './clients/ipApi.client';
+import { IPApiClient } from '../clients/ipApi.client';
 
 /*
     Manage the methods of geolocation - > 
@@ -8,14 +8,14 @@ import { IPApiClient } from './clients/ipApi.client';
         * Return simplified data from the API INFO Client
 */
 export class GeolocationService {
-    constructor(private readonly ipApiClient: IPApiClient){
+    constructor(private readonly ipApiClient: IPApiClient) {
 
     }
 
     async getGeoLocationData(ip: string): Promise<any> {
         const geoLocationData = await this.ipApiClient.getGeoLocation(ip);
         const { country, countryCode, lat, lon, currency } = geoLocationData;
-        
+
         const distance = getDistanceTwoPoints(LAT_NY, LONG_NY, lat, lon, 'N');
 
         return {
@@ -23,7 +23,9 @@ export class GeolocationService {
             name: country,
             code: countryCode,
             currency: currency,
-            distance_to_usa: distance
+            distance_to_usa: new Number(distance.toFixed(2)),
+            lat,
+            lon,
         }
     }
 }
