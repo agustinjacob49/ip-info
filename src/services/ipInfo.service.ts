@@ -35,8 +35,26 @@ export class IPInfoService {
         }
     }
 
-
-    transform(): any {
-        return {};
+    async getStatistics(){
+        try{
+            //Update statistics
+            const mostRequestCountry = await this.persistanceService.getMostRequestedCountry();
+            const highestDistanceCountry = await this.persistanceService.getLongestDistanceCountry();
+            const { name: { S : nameRequested }, req_amount: { N: req_amountRequested }} = mostRequestCountry;
+            const { name: { S : nameDistance }, longest_distance_req: { N: distance_amountDistance }} = highestDistanceCountry;
+            
+            return {
+                "longest_distance": {
+                    "country": nameDistance,
+                    "value": distance_amountDistance 
+                },
+                "most_traced": {
+                    "country": nameRequested, 
+                    "value": req_amountRequested,
+                } 
+            };
+        } catch(err) {
+            console.log(err);
+        }
     }
 }
