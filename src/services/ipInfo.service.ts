@@ -18,13 +18,13 @@ export class IPInfoService {
             //Call to geolocationservice
             const geoLocationData = await this.geolocationService.getGeoLocationData(ip);
 
-            const { currency } = geoLocationData;
+            const { currency, code, distance_to_usa: distance, name } = geoLocationData;
 
             //Call Currency service
             const currencyData = await this.currencyService.getCurrencyData(currency);
 
             //Update statistics
-            //await this.persistanceService.save(geoLocationData);
+            await this.persistanceService.updateStatistics(code, distance, name);
 
             return {
                 ...geoLocationData,
@@ -35,8 +35,26 @@ export class IPInfoService {
         }
     }
 
-
-    transform(): any {
-        return {};
+    async getStatistics(){
+        try{
+            //Update statistics
+            const mostRequestCountry = await this.persistanceService.getMostRequestedCountry();
+            const highestDistanceCountry = await this.persistanceService.getLongestDistanceCountry();
+            const { name: { S : nameRequested }, req_amount: { N: req_amountRequested }} = mostRequestCountry;
+            const { name: { S : nameDistance }, longest_distance_req: { N: distance_amountDistance }} = highestDistanceCountry;
+            
+            return {
+                "longest_distance": {
+                    "country": nameDistance,
+                    "value": distance_amountDistance 
+                },
+                "most_traced": {
+                    "country": nameRequested, 
+                    "value": req_amountRequested,
+                } 
+            };
+        } catch(err) {
+            console.log(err);
+        }
     }
 }

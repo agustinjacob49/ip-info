@@ -1,5 +1,6 @@
 import { CurrencyClient } from '../clients/currency.client';
 import getSymbolFromCurrency from 'currency-symbol-map'
+import { $, USD } from '../common/constants';
 
 /*
     Method who manage comunication and transform data with currency client
@@ -14,8 +15,8 @@ export class CurrencyService {
         const symbol = getSymbolFromCurrency(base);
         const currencies = [
             {
-                iso: "USD",
-                symbol: "$",
+                iso: USD,
+                symbol: $,
                 conversion_rate: 1
             },
             {
