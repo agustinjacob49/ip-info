@@ -7,7 +7,9 @@ import express from 'express';
 
 
 export default(app: express.Application ) => {
-    const container = createContainer();
+    const container = createContainer({
+        injectionMode: 'CLASSIC'
+    });
 
     container.register({
         geolocationService : asClass(GeolocationService).scoped(),
