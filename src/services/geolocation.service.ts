@@ -1,6 +1,6 @@
 import { LONG_NY, LAT_NY } from '../common/constants';
 import { getDistanceTwoPoints } from '../common/utils';
-import { IPApiClient } from './clients/ipApi.client';
+import { IPApiClient } from '../clients/ipApi.client';
 
 /*
     Manage the methods of geolocation - > 
@@ -23,7 +23,9 @@ export class GeolocationService {
             name: country,
             code: countryCode,
             currency: currency,
-            distance_to_usa: distance
+            distance_to_usa: new Number(distance.toFixed(2)),
+            lat,
+            lon,
         }
     }
 }

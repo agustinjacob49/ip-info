@@ -11,17 +11,14 @@ export class CountryRepository {
             ProjectionExpression: 'code, longest_distance_req, #name',
             ExpressionAttributeNames: {'#name': 'name'},
         };
-        const result = null;
 
         try {
             const result = await SingletonDB.getInstance().ddb.getItem(params);
             console.log(result);
+            return result;
         } catch (err) {
-            console.log(err);
+            return err;
         }
-
-
-        return result;
     } 
 
 
@@ -34,16 +31,13 @@ export class CountryRepository {
             ProjectionExpression: 'code, longest_distance_req, #name',
             ExpressionAttributeNames: {'#name': 'name'},
         };
-        const result = null;
 
         try {
             const result = await SingletonDB.getInstance().ddb.getItem(params);
-            console.log(result);
+            return result;
         } catch (err) {
             console.log(err);
+            return err;
         }
-
-
-        return result;
     } 
 }

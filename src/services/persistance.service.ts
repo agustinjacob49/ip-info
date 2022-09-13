@@ -18,4 +18,9 @@ export class PersistanceService {
         //FOO implement
         return await this.countryRepository.getByCode(code);
     }
+
+    async getMostRequestedCountry(code: string): Promise<any> {
+        //FOO implement
+        return await this.countryRepository.getByCode(code);
+    }
 }
