@@ -36,12 +36,34 @@ export class PersistanceService {
 
 
     async get(code: string): Promise<any> {
-        //FOO implement
         return await this.countryRepository.getByCode(code);
     }
 
-    async getMostRequestedCountry(code: string): Promise<any> {
-        //FOO implement
-        return await this.countryRepository.getByCode(code);
+    async getMostRequestedCountry(): Promise<any> {
+        const items = await this.countryRepository.getAll() as Array<any>;
+        const arrayNew = [...items];
+
+        arrayNew.sort(function (a: any, b: any) {
+          const { req_amount : { N : reqAmountA} } = a;
+          const { req_amount : { N : reqAmountB} } = b;
+
+          return parseFloat(reqAmountA) - parseFloat(reqAmountB);
+        });
+
+        return arrayNew.pop();
+    }
+
+    async getLongestDistanceCountry(): Promise<any> {
+        const items = await this.countryRepository.getAll() as Array<any>;
+        const arrayNew = [...items];
+
+        arrayNew.sort(function (a: any, b: any) {
+          const { longest_distance_req : { N : longestDistanceA} } = a;
+          const { longest_distance_req : { N : longestDistanceB} } = b;
+
+          return parseFloat(longestDistanceA) - parseFloat(longestDistanceB);
+        });
+
+        return arrayNew.pop();
     }
 }
