@@ -7,7 +7,7 @@ process.env.API_CURRENCY_KEY = process.env.API_CURRENCY_KEY || '';
 import dotenv from 'dotenv';
 import express from 'express';
 
-dotenv.config({ path: `${__dirname}/config/${process.env.APP_ENV}.env`});
+dotenv.config({ path: `${__dirname}/config/${process.env.APP_ENV}.env` });
 
 const app: express.Application = express();
 

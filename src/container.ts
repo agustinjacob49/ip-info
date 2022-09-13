@@ -11,13 +11,13 @@ import { CurrencyClient } from './clients/currency.client';
 import { CountryRepository } from './services/repositories/impl/country.repository';
 
 
-export default(app: express.Application ) => {
+export default (app: express.Application) => {
     const container = createContainer({
         injectionMode: 'CLASSIC'
     });
 
     container.register({
-        geolocationService : asClass(GeolocationService).scoped(),
+        geolocationService: asClass(GeolocationService).scoped(),
         currencyService: asClass(CurrencyService).scoped(),
         persistanceService: asClass(PersistanceService).scoped(),
         ipInfoService: asClass(IPInfoService).scoped(),

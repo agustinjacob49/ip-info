@@ -5,12 +5,12 @@ import getSymbolFromCurrency from 'currency-symbol-map'
     Method who manage comunication and transform data with currency client
 */
 export class CurrencyService {
-    constructor(private readonly currencyClient: CurrencyClient){
+    constructor(private readonly currencyClient: CurrencyClient) {
 
     }
 
     async getCurrencyData(currency: string): Promise<any> {
-        const { base, rates : { USD : usdRate } } = await this.currencyClient.getCurrencyData(currency);
+        const { base, rates: { USD: usdRate } } = await this.currencyClient.getCurrencyData(currency);
         const symbol = getSymbolFromCurrency(base);
         const currencies = [
             {

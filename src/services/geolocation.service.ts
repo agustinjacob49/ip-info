@@ -8,14 +8,14 @@ import { IPApiClient } from '../clients/ipApi.client';
         * Return simplified data from the API INFO Client
 */
 export class GeolocationService {
-    constructor(private readonly ipApiClient: IPApiClient){
+    constructor(private readonly ipApiClient: IPApiClient) {
 
     }
 
     async getGeoLocationData(ip: string): Promise<any> {
         const geoLocationData = await this.ipApiClient.getGeoLocation(ip);
         const { country, countryCode, lat, lon, currency } = geoLocationData;
-        
+
         const distance = getDistanceTwoPoints(LAT_NY, LONG_NY, lat, lon, 'N');
 
         return {

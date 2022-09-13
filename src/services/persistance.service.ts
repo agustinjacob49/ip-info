@@ -4,7 +4,7 @@ import { CountryRepository } from './repositories/impl/country.repository';
     Manage the comunication with the db layer 
 */
 export class PersistanceService {
-    constructor(private readonly countryRepository: CountryRepository){
+    constructor(private readonly countryRepository: CountryRepository) {
 
     }
 

@@ -6,10 +6,10 @@ export class CountryRepository {
         const params: GetItemInput = {
             TableName: 'countries',
             Key: {
-                'code': {'S': code}
+                'code': { 'S': code }
             },
             ProjectionExpression: 'code, longest_distance_req, #name',
-            ExpressionAttributeNames: {'#name': 'name'},
+            ExpressionAttributeNames: { '#name': 'name' },
         };
 
         try {
@@ -19,17 +19,17 @@ export class CountryRepository {
         } catch (err) {
             return err;
         }
-    } 
+    }
 
 
     public async saveData(code: string) {
         const params: GetItemInput = {
             TableName: 'countries',
             Key: {
-                'code': {'S': code}
+                'code': { 'S': code }
             },
             ProjectionExpression: 'code, longest_distance_req, #name',
-            ExpressionAttributeNames: {'#name': 'name'},
+            ExpressionAttributeNames: { '#name': 'name' },
         };
 
         try {
@@ -39,5 +39,5 @@ export class CountryRepository {
             console.log(err);
             return err;
         }
-    } 
+    }
 }
