@@ -8,13 +8,12 @@ export class CurrencyClient {
 
 
         try {
-            // 👇️ const data: GetUsersResponse
             const { data, status } = await axios.get<any>(
               `https://api.apilayer.com/fixer/latest?symbols=USD&base=${currency}`,
               {
                 headers: {
                   Accept: 'application/json',
-                  apikey: 'c6d2yYeqSg6QGTSasAxQ9QdYNjdch1VC'
+                  apikey: process.env.API_CURRENCY_KEY as string,
                 },
               },
             );
@@ -34,21 +33,5 @@ export class CurrencyClient {
               return 'An unexpected error occurred';
             }
           }
-        /*
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-              resolve({
-                    "base": 'USD',
-                    "date": "2018-02-13",
-                    "rates": {
-                       "CAD": 1.260046,
-                       "CHF": 0.933058,
-                       "EUR": 0.806942,
-                       "GBP": 0.719154,
-                    }
-            });
-            }, 1500);
-          });
-          */
     }
 }
