@@ -31,7 +31,10 @@ export class CountryRepository {
 
         try {
             const result = await SingletonDB.getInstance().ddb.scan(params);
-            return result;
+            return result.promise().then((response) => {
+                const { Items : items } = response;
+                return items;
+            });
         } catch (err) {
             return err;
         }
