@@ -1,31 +1,19 @@
-import { route, GET } from 'awilix-express';
+import { route, POST } from 'awilix-express';
 import { Request, Response } from 'express';
+import { GeolocationService } from '../services/geolocation.service';
+import { RequestPayloadDTO } from '../common/Request.dto';
 
 
 @route('/traces')
 export class IpInfoController {
+    constructor(private readonly geolocationService: GeolocationService){
 
-    @GET()
-    public index(req: Request, res: Response): void {
-        res.send({
-            "ip": "190.191.237.90",
-            "name": "Argentina",
-            "code": "AR",
-            "lat": -34.6022,
-            "lon": -58.3845,
-            "currencies": [
-                {
-                    "iso": "ARS",
-                    "symbol": "$",
-                    "conversion_rate": 0.023
-                },
-                {
-                    "iso": "USD",
-                    "symbol": "$",
-                    "conversion_rate": 1
-                }
-            ],
-            "distance_to_usa": 8395.28
-        })
+    }
+
+    @POST()
+    public trace(req: Request, res: Response): void {
+        const { body } = req;
+        const { ip } = body as RequestPayloadDTO;
+        res.send(this.geolocationService.getGeoLocationData(ip));
     }
 }

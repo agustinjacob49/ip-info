@@ -1,13 +1,23 @@
 import { app } from './../app';
 import { loadControllers } from 'awilix-express';
 import loadDependencies from './../container';
+import { SingletonDB } from '../common/db';
+import express from 'express';
 
 const PORT = process.env.PORT;
 
-//Containers
+try {
+    SingletonDB.getInstance();
+} catch (err) {
+    console.log(err);
+}
+
+app.use(express.json());
+
+//Services IOC
 loadDependencies(app);
 
-//Controllers
+//Controllers IOC
 app.use(loadControllers('../controllers/*.ts', { cwd : __dirname }));
 
 app.get('/ping', (req, res) => {
