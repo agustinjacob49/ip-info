@@ -18,13 +18,13 @@ export class IPInfoService {
             //Call to geolocationservice
             const geoLocationData = await this.geolocationService.getGeoLocationData(ip);
 
-            const { currency } = geoLocationData;
+            const { currency, code, distance_to_usa: distance, name } = geoLocationData;
 
             //Call Currency service
             const currencyData = await this.currencyService.getCurrencyData(currency);
 
             //Update statistics
-            //await this.persistanceService.save(geoLocationData);
+            await this.persistanceService.updateStatistics(code, distance, name);
 
             return {
                 ...geoLocationData,
