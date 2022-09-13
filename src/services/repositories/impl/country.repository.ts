@@ -1,20 +1,36 @@
 import { GetItemInput } from "aws-sdk/clients/dynamodb";
 import { SingletonDB } from "../../../common/db";
 
+const SCHEMA = process.env.SCHEMA;
 export class CountryRepository {
-    public async getByCode(code: string) {
+    public async getByCode(code: string): Promise<any> {
         const params: GetItemInput = {
-            TableName: 'countries',
+            TableName: SCHEMA as string,
             Key: {
                 'code': { 'S': code }
             },
-            ProjectionExpression: 'code, longest_distance_req, #name',
+            ProjectionExpression: 'code, longest_distance_req, #name, req_amount',
+            ExpressionAttributeNames: { '#name': 'name' },
+        };
+        try {
+            const response = await SingletonDB.getInstance().ddb.getItem(params);
+            return response.promise().then((item) => {
+                return item;
+            });
+        } catch (err) {
+            return err;
+        }
+    }
+
+    public async getAll() {
+        const params = {
+            TableName: SCHEMA as string,
+            ProjectionExpression: 'code, longest_distance_req, #name, req_amount',
             ExpressionAttributeNames: { '#name': 'name' },
         };
 
         try {
-            const result = await SingletonDB.getInstance().ddb.getItem(params);
-            console.log(result);
+            const result = await SingletonDB.getInstance().ddb.scan(params);
             return result;
         } catch (err) {
             return err;
@@ -22,21 +38,20 @@ export class CountryRepository {
     }
 
 
-    public async saveData(code: string) {
-        const params: GetItemInput = {
-            TableName: 'countries',
-            Key: {
-                'code': { 'S': code }
-            },
-            ProjectionExpression: 'code, longest_distance_req, #name',
-            ExpressionAttributeNames: { '#name': 'name' },
-        };
+    public async saveData(countryData: any) {
 
+        const params = {
+            TableName: SCHEMA as string,
+            Item: {
+                ...countryData
+            }
+        };
         try {
-            const result = await SingletonDB.getInstance().ddb.getItem(params);
-            return result;
+            const response = await SingletonDB.getInstance().ddb.putItem(params);
+            return response.promise().then((item) => {
+                return item;
+            });
         } catch (err) {
-            console.log(err);
             return err;
         }
     }
