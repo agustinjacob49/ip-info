@@ -1,14 +1,13 @@
 import { GetItemInput } from "aws-sdk/clients/dynamodb";
-import { SingletonDB } from "../../../common/db";
-import { countryDTOtoDynamoDBDTOMapper, dynamoDbObjetToCountryMapper } from "../../../common/utils";
-import { ICountryRepository } from "../country.repository";
-import { Country } from '../domain/country';
+import { SingletonDB } from "../../../../common/db.mock";
+import { countryDTOtoDynamoDBDTOMapper, dynamoDbObjetToCountryMapper } from "../../../../common/utils";
+import { ICountryRepository } from "../../country.repository";
+import { Country } from '../../domain/country';
 
-const SCHEMA = process.env.SCHEMA;
 export class CountryRepository implements ICountryRepository {
     public async getByCode(code: string): Promise<Country | null> {
         const params: GetItemInput = {
-            TableName: SCHEMA as string,
+            TableName: 'countries-test',
             Key: {
                 'code': { 'S': code }
             },
@@ -31,7 +30,7 @@ export class CountryRepository implements ICountryRepository {
 
     public async getAll(): Promise<Array<Country>> {
         const params = {
-            TableName: SCHEMA as string,
+            TableName: 'countries-test',
             ProjectionExpression: 'code, longest_distance_req, #name, req_amount',
             ExpressionAttributeNames: { '#name': 'name' },
         };
@@ -53,7 +52,7 @@ export class CountryRepository implements ICountryRepository {
 
     public async saveData(countryData: Country): Promise<boolean> {
         const params = {
-            TableName: SCHEMA as string,
+            TableName: 'countries-test',
             Item: {
                 ...countryDTOtoDynamoDBDTOMapper(countryData)
             }

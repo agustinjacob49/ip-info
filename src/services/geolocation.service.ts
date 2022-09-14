@@ -1,6 +1,6 @@
 import { LONG_NY, LAT_NY } from '../common/constants';
 import { getDistanceTwoPoints } from '../common/utils';
-import { IPApiClient } from '../clients/ipApi.client';
+import { GeoLocationAPIClient } from '../clients/ipApi.client';
 import { GeoLocationDTO } from '../dtos/Geolocation.dto';
 
 /*
@@ -9,7 +9,7 @@ import { GeoLocationDTO } from '../dtos/Geolocation.dto';
         * Return simplified data from the API INFO Client
 */
 export class GeolocationService {
-    constructor(private readonly ipApiClient: IPApiClient) {
+    constructor(private readonly ipApiClient: GeoLocationAPIClient) {
 
     }
 
