@@ -16,7 +16,7 @@ export class StatisticsController {
             res.send(result);
         }).catch((err) => {
             console.log(err);
-            res.send(err);
+            res.status(500);
         });
     }
 }
