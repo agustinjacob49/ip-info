@@ -5,7 +5,7 @@ import { FIELDS } from '../common/constants';
 */
 
 const ipURI = 'http://ip-api.com/json/';
-export class IPApiClient {
+export class GeoLocationAPIClient {
   async getGeoLocation(ip: string): Promise<any> {
     try {
       const { data } = await axios.get<any>(
@@ -21,7 +21,7 @@ export class IPApiClient {
       const { data } = err;
       const { message } = data || {};
       const errorMessage = message || err.message || 'undefined error';
-      throw new Error(`Something went wrong at IPApiClient - getGeoLocation - ${errorMessage}`);
+      throw new Error(`Something went wrong at GeoLocationAPIClient - getGeoLocation - ${errorMessage}`);
     }
   }
 }
