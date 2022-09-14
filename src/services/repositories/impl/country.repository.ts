@@ -1,6 +1,6 @@
 import { GetItemInput } from "aws-sdk/clients/dynamodb";
 import { SingletonDB } from "../../../common/db";
-import { countryDTOtoDynamoDBDTO, dynamoDbObjetToCountryMapper } from "../../../common/utils";
+import { countryDTOtoDynamoDBDTOMapper, dynamoDbObjetToCountryMapper } from "../../../common/utils";
 import { ICountryRepository } from "../country.repository";
 import { Country } from '../domain/country';
 
@@ -55,7 +55,7 @@ export class CountryRepository implements ICountryRepository {
         const params = {
             TableName: SCHEMA as string,
             Item: {
-                ...countryDTOtoDynamoDBDTO(countryData)
+                ...countryDTOtoDynamoDBDTOMapper(countryData)
             }
         };
         try {

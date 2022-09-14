@@ -60,4 +60,17 @@ describe('Persistance service test', () => {
         expect(name).toBe('Uruguay');
         expect(reqAmount).toBe(1);
     });
+
+    test('updateStatistics - same longest distance country ', async () => {
+        const result = await persistanceServiceMock.updateStatistics('CA', 888888888, 'CANADA');
+        await persistanceServiceMock.updateStatistics('CA', 888888888, 'CANADA');
+        const resultLongestDistance = await persistanceServiceMock.getLongestDistanceCountry();
+
+        const { code, longestDistance, name, reqAmount } = resultLongestDistance as Country;
+        expect(result).toBe(true);
+        expect(code).toBe('CA');
+        expect(longestDistance).toBe(888888888);
+        expect(name).toBe('CANADA');
+        expect(reqAmount).toBe(2);
+    });
 });
