@@ -1,5 +1,5 @@
 import { PersistanceService } from '../../../services/persistance.service';
-import { CountryRepository } from '../../../services/repositories/impl/mock/country.repository';
+import { CountryRepository } from '../../../services/repositories/impl/mock/country.mock.repository';
 import { Country } from '../../../services/repositories/domain/country';
 
 const repository = new CountryRepository();
