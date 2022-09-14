@@ -1,3 +1,5 @@
+import { Country } from '../services/repositories/domain/country';
+import { stringDynamoDTO, DynamoDBCountryDTO } from '../dtos/DynamoDBCountry.dto';
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:::                                                                         :::
 //:::  This routine calculates the distance between two points (given the     :::
@@ -47,6 +49,49 @@ const getDistanceTwoPoints = (lat1: number, lon1: number, lat2: number, lon2: nu
 	}
 }
 
+const dynamoDbObjetToCountryMapper = (item: any): Country => {
+	const { code: { S: code }, longest_distance_req: { N: longestDistance }, req_amount: { N: reqAmount }, name: { S: name } } = item;
+
+	const country: Country = {
+		code,
+		longestDistance: parseFloat(longestDistance),
+		reqAmount: parseInt(reqAmount),
+		name,
+	}
+
+	return country;
+}
+
+const countryDTOtoDynamoDBDTO = (countryData: Country): DynamoDBCountryDTO => {
+	const { code, name, longestDistance: longest_distance_req, reqAmount: req_amount } = countryData;
+
+	// country
+	const newItem: DynamoDBCountryDTO = { 
+		code : { S: code } as stringDynamoDTO,
+		name: { S : name}  as stringDynamoDTO,
+		longest_distance_req: {N: longest_distance_req.toString()},
+		req_amount: {N: req_amount.toString()},
+	};
+
+	return newItem;
+}
+
+const isInvalidIPaddress = (ipaddress: string) => {  
+
+	if(ipaddress == null || ipaddress == undefined){
+		return true;
+	}
+
+	if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {  
+		return false
+	}
+
+	return (true)  
+  }  
+
 export {
-	getDistanceTwoPoints
+	getDistanceTwoPoints,
+	dynamoDbObjetToCountryMapper,
+	countryDTOtoDynamoDBDTO,
+	isInvalidIPaddress
 }

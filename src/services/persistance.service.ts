@@ -1,4 +1,5 @@
 import { CountryRepository } from './repositories/impl/country.repository';
+import { Country } from './repositories/domain/country';
 
 /*
     Manage the comunication with the db layer 
@@ -8,62 +9,55 @@ export class PersistanceService {
 
     }
 
-    async updateStatistics(code: string, distanceActual: number, name: string): Promise<any> {
+    async updateStatistics(code: string, distanceActual: number, name: string): Promise<boolean> {
         // Get actual country
-        const { Item: item } = await this.countryRepository.getByCode(code);
-        let newItem = { ...item };
-        if (item) {
-            const { longest_distance_req: { N: distanceSaved }, req_amount : { N: amountReq} } = item;
-            const distanceToSave = parseFloat(distanceSaved) < distanceActual ? distanceActual : distanceSaved;
-            const amountReqToSave = parseInt(amountReq) + 1;
+        const country: Country | null = await this.countryRepository.getByCode(code);
+        let distanceToSave = distanceActual;
+        let amountReqToSave = 1;
+        if (country) {
+            const { longestDistance: distanceSaved, reqAmount: reqAmountSaved } = country;
 
-            newItem = {
-                ...newItem,
-                longest_distance_req: {N: distanceToSave.toString()},
-                req_amount: {N: amountReqToSave.toString()},
-            }
-        } else {
-            newItem = {
-                code : { S: code },
-                longest_distance_req: {N: distanceActual.toString()},
-                req_amount: {N: '1'.toString()},
-                name: { S : name}
-            }
+            distanceToSave = distanceSaved < distanceActual ? distanceActual : distanceSaved;
+            amountReqToSave = reqAmountSaved;
+            amountReqToSave++
         }
 
-        return this.countryRepository.saveData(newItem);
+        const countryToSave: Country = {
+            code,
+            name,
+            longestDistance: distanceToSave,
+            reqAmount: amountReqToSave
+        }
+
+        return this.countryRepository.saveData(countryToSave);
     }
 
-
-    async get(code: string): Promise<any> {
-        return await this.countryRepository.getByCode(code);
-    }
-
-    async getMostRequestedCountry(): Promise<any> {
-        const items = await this.countryRepository.getAll() as Array<any>;
+    async getMostRequestedCountry(): Promise<Country | undefined> {
+        const items = await this.countryRepository.getAll() as Array<Country>;
         const arrayNew = [...items];
 
-        arrayNew.sort(function (a: any, b: any) {
-          const { req_amount : { N : reqAmountA} } = a;
-          const { req_amount : { N : reqAmountB} } = b;
+        arrayNew.sort(function (a: Country, b: Country) {
+            const { reqAmount: reqAmountA } = a;
+            const { reqAmount: reqAmountB } = b;
 
-          return parseFloat(reqAmountA) - parseFloat(reqAmountB);
+            return reqAmountA - reqAmountB;
         });
 
-        return arrayNew.pop();
+        const result: Country | undefined = arrayNew.pop();
+        return result;
     }
 
-    async getLongestDistanceCountry(): Promise<any> {
-        const items = await this.countryRepository.getAll() as Array<any>;
+    async getLongestDistanceCountry(): Promise<Country | undefined> {
+        const items = await this.countryRepository.getAll() as Array<Country>;
         const arrayNew = [...items];
 
-        arrayNew.sort(function (a: any, b: any) {
-          const { longest_distance_req : { N : longestDistanceA} } = a;
-          const { longest_distance_req : { N : longestDistanceB} } = b;
+        arrayNew.sort(function (a: Country, b: Country) {
+            const { longestDistance: longestDistanceA } = a;
+            const { longestDistance: longestDistanceB } = b;
 
-          return parseFloat(longestDistanceA) - parseFloat(longestDistanceB);
+            return longestDistanceA - longestDistanceB;
         });
-
-        return arrayNew.pop();
+        const result: Country | undefined = arrayNew.pop();
+        return result;
     }
 }
