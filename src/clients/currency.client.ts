@@ -9,7 +9,7 @@ const apiLayerURI = 'https://api.apilayer.com/fixer/latest';
 export class CurrencyClient {
   async getCurrencyData(currency: string): Promise<any> {
     try {
-      const { data, status } = await axios.get<any>(
+      const { data } = await axios.get<any>(
         `${apiLayerURI}?symbols=${USD}&base=${currency}`,
         {
           headers: {
@@ -18,8 +18,6 @@ export class CurrencyClient {
           },
         },
       );
-      console.log("data", data);
-      console.log("status", status);
       
       return data;
     } catch (err: any) {
