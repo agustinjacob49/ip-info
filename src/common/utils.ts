@@ -1,5 +1,6 @@
 import { Country } from '../services/repositories/domain/country';
 import { stringDynamoDTO, DynamoDBCountryDTO } from '../dtos/DynamoDBCountry.dto';
+import { DynamoDB } from 'aws-sdk';
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:::                                                                         :::
 //:::  This routine calculates the distance between two points (given the     :::
@@ -49,20 +50,24 @@ const getDistanceTwoPoints = (lat1: number, lon1: number, lat2: number, lon2: nu
 	}
 }
 
-const dynamoDbObjetToCountryMapper = (item: any): Country => {
-	const { code: { S: code }, longest_distance_req: { N: longestDistance }, req_amount: { N: reqAmount }, name: { S: name } } = item;
+const dynamoDbObjetToCountryMapper = (item: DynamoDB.AttributeMap | undefined): Country => {
+	if (item == undefined) {
+		throw new Error('undefined attribute map - dynamoDbObjetToCountryMapper');
+	}
+
+	const { code: { S: code }, longest_distance_req: { N: longestDistance }, req_amount: { N: reqAmount }, name: { S: name } } = item as DynamoDB.AttributeMap;
 
 	const country: Country = {
-		code,
-		longestDistance: parseFloat(longestDistance),
-		reqAmount: parseInt(reqAmount),
-		name,
+		code: code as string,
+		longestDistance: parseFloat(longestDistance as string),
+		reqAmount: parseInt(reqAmount as string),
+		name: name as string,
 	}
 
 	return country;
 }
 
-const countryDTOtoDynamoDBDTO = (countryData: Country): DynamoDBCountryDTO => {
+const countryDTOtoDynamoDBDTOMapper = (countryData: Country): DynamoDBCountryDTO => {
 	const { code, name, longestDistance: longest_distance_req, reqAmount: req_amount } = countryData;
 
 	// country
@@ -92,6 +97,6 @@ const isInvalidIPaddress = (ipaddress: string) => {
 export {
 	getDistanceTwoPoints,
 	dynamoDbObjetToCountryMapper,
-	countryDTOtoDynamoDBDTO,
+	countryDTOtoDynamoDBDTOMapper,
 	isInvalidIPaddress
 }

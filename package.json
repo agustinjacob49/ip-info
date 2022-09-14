@@ -6,7 +6,7 @@
   "scripts": {
     "start": "APP_ENV=prod ts-node src/server/server.ts",
     "dev": "APP_ENV=dev ts-node-dev src/server/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test jest --coverage",
     "lint": "eslint \"src/*.{ts,tsx}\""
   },
   "repository": {
@@ -30,10 +30,29 @@
     "typescript": "^4.8.3"
   },
   "devDependencies": {
+    "@jest/globals": "^29.0.3",
+    "@shelf/jest-dynamodb": "^3.3.1",
     "@types/express": "^4.17.13",
+    "@types/jest": "^29.0.2",
     "@typescript-eslint/eslint-plugin": "^5.37.0",
     "@typescript-eslint/parser": "^5.37.0",
     "eslint": "^8.23.1",
+    "jest-environment-node": "^29.0.3",
+    "jest-mock-axios": "^4.7.0-beta",
+    "merge": "^2.1.1",
+    "ts-jest": "^29.0.1",
     "ts-node-dev": "^2.0.0"
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true,
+    "coverageReporters": [
+      "json",
+      "html"
+    ],
+    "preset": "ts-jest",
+    "globalSetup": "./node_modules/@shelf/jest-dynamodb/lib/setup.js",
+    "globalTeardown": "./node_modules/@shelf/jest-dynamodb/lib/teardown.js",
+    "collectCoverageFrom": ["src/services/*.ts", "src/common/*.ts", "src/clients/*.ts", "!src/common/db.ts"]
   }
 }

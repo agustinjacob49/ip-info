@@ -5,7 +5,7 @@ import { GeolocationService } from './services/geolocation.service';
 import express from 'express';
 import { PersistanceService } from './services/persistance.service';
 import { IPInfoService } from './services/ipInfo.service';
-import { IPApiClient } from './clients/ipApi.client';
+import { GeoLocationAPIClient } from './clients/ipApi.client';
 import { CurrencyClient } from './clients/currency.client';
 import { CountryRepository } from './services/repositories/impl/country.repository';
 
@@ -20,7 +20,7 @@ export default (app: express.Application) => {
         currencyService: asClass(CurrencyService).scoped(),
         persistanceService: asClass(PersistanceService).scoped(),
         ipInfoService: asClass(IPInfoService).scoped(),
-        ipApiClient: asClass(IPApiClient).scoped(),
+        ipApiClient: asClass(GeoLocationAPIClient).scoped(),
         currencyClient: asClass(CurrencyClient).scoped(),
         countryRepository: asClass(CountryRepository).scoped()
     });
