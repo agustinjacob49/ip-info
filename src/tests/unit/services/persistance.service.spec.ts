@@ -12,10 +12,9 @@ describe('Persistance service test', () => {
         const result = await persistanceServiceMock.updateStatistics('AR', 123, 'Argentina');
         const resultMostRequested = await persistanceServiceMock.getMostRequestedCountry();
 
-        const { code, longestDistance, name, reqAmount } = resultMostRequested as Country;
+        const { code, name, reqAmount } = resultMostRequested as Country;
         expect(result).toBe(true);
         expect(code).toBe('AR');
-        expect(longestDistance).toBe(123);
         expect(name).toBe('Argentina');
         expect(reqAmount).toBe(1);
     });
@@ -24,10 +23,9 @@ describe('Persistance service test', () => {
         const result = await persistanceServiceMock.updateStatistics('AR', 99, 'Argentina');
         const resultMostRequested = await persistanceServiceMock.getMostRequestedCountry();
 
-        const { code, longestDistance, name, reqAmount } = resultMostRequested as Country;
+        const { code, name, reqAmount } = resultMostRequested as Country;
         expect(result).toBe(true);
         expect(code).toBe('AR');
-        expect(longestDistance).toBe(123);
         expect(name).toBe('Argentina');
         expect(reqAmount).toBeGreaterThan(1);
     });

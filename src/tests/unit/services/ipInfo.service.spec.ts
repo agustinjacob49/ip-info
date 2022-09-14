@@ -1,65 +1,158 @@
-import mockAxios from 'jest-mock-axios';
 import { GeoLocationAPIClient } from '../../../clients/ipApi.client';
-import { FIELDS } from '../../../common/constants';
 import { GeolocationService } from '../../../services/geolocation.service';
+import { IPInfoService } from '../../../services/ipInfo.service';
+import { CurrencyService } from '../../../services/currency.service';
+import { CurrencyClient } from '../../../clients/currency.client';
+import { PersistanceService } from '../../../services/persistance.service';
+import { CountryRepository } from '../../../services/repositories/impl/mock/country.mock.repository';
 
-const geoLocationServiceMock = new GeolocationService(new GeoLocationAPIClient());
-describe('Geolocation service test', () => {
+const geoLocation = new GeolocationService(new GeoLocationAPIClient());
+
+
+const currencyService = new CurrencyService(new CurrencyClient());
+
+const persistanceService = new PersistanceService(new CountryRepository());
+
+const ipInfoService = new IPInfoService(geoLocation, currencyService, persistanceService);
+describe('IP Info service test', () => {
+
     jest.setTimeout(9000000);
 
-    afterEach(() => {
+    beforeEach(() => {
         // cleaning up the mess left behind the previous test
-        mockAxios.reset();
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+        jest.resetAllMocks();
+        jest.resetModules();
     });
 
-    test('get ipInfo  - api return 200', () => {
+    test('IP Info service - Calculate works well', () => {
 
-        const promise = geoLocationServiceMock.getGeoLocationData('192.168.0.1');
+        geoLocation.getGeoLocationData = jest.fn(() => {
+            return new Promise((resolve, reject) => {
+                resolve({
+                    ip: '192.168.0.1',
+                    name: 'Argentina',
+                    code: 'AR',
+                    currency: 'ARS',
+                    distance_to_usa: 1945,
+                    lat: 14,
+                    lon: -14,
+                });
+            });
+        });
 
-        expect(mockAxios.get).toHaveBeenCalledWith(`http://ip-api.com/json/192.168.0.1?fields=${FIELDS}`, { headers: { "Accept": "application/json" } });
+        currencyService.getCurrencyData = jest.fn(() => {
+            return new Promise((resolve, reject) => {
+                resolve(
+                    [
+                        {
+                            iso: 'USD',
+                            symbol: '$',
+                            conversion_rate: 1
+                        },
+                        {
+                            iso: 'ARS',
+                            symbol: '$',
+                            conversion_rate: 0.01
+                        }
 
-        // simulating a server response
-        const responseObj = {
-            data: {
-                "status": "success",
-                "country": "Canada",
-                "countryCode": "CA",
-                "lat": 45.6085,
-                "lon": -73.5493,
-                "currency": "CAD"
-              
-            }
-        };
-        mockAxios.mockResponse(responseObj);
+                    ]
+                );
+            });
+        });
 
-        return promise.then((res) => {
-            const {ip, name, code, currency, lat, lon, distance_to_usa} = res;
+        const promise = ipInfoService.calculate('192.168.0.1');
+
+        return promise.then((resp) => {
+            const { ip, name, code, lat, lon, distance_to_usa } = resp;
             expect(ip).toBe('192.168.0.1');
-            expect(name).toBe('Canada');
-            expect(code).toBe('CA');
-            expect(lat).toBe(45.6085);
-            expect(lon).toBe(-73.5493);
-            expect(distance_to_usa.toString()).toBe('293.15');
-            expect(currency).toBe(currency)
+            expect(name).toBe('Argentina');
+            expect(code).toBe('AR');
+            expect(lat).toBe(14);
+            expect(lon).toBe(-14);
+            expect(distance_to_usa.toString()).toBe('1945');
         });
     });
 
-    test('get ipInfo  - api fails', () => {
 
-        const promise = geoLocationServiceMock.getGeoLocationData('192.168.0.1');
+    test('IP Info service - Statistics twice fails', () => {
 
-        expect(mockAxios.get).toHaveBeenCalledWith(`http://ip-api.com/json/192.168.0.1?fields=${FIELDS}`, { headers: { "Accept": "application/json" } });
+        persistanceService.getLongestDistanceCountry = jest.fn(() => {
+            return new Promise((resolve, reject) => {
+                reject({ message: 'error' });
+            });
+        });
+        persistanceService.getMostRequestedCountry = jest.fn(() => {
+            return new Promise((resolve, reject) => {
+                reject({ message: 'error' });
+            });
+        });
 
-        const rejectObj = {
-            data: {
-                message: 'Error'
-            }
-        };
-        mockAxios.mockError(rejectObj);
+        const promise = ipInfoService.getStatistics();
 
-        return promise.catch((err: any) => {
+        return promise.then((resp) => {
+            expect(true).toBeFalsy();
+        }).catch((err) => {
             const { message } = err;
-            expect(message).toBe('Something went wrong at GeoLocationAPIClient - getGeoLocation - Error');
-        })
+            expect(message).toEqual('error');
+        });
     });
+
+
+    test('IP Info service - Statistics getMostRequestedCountry fails', () => {
+
+        persistanceService.getLongestDistanceCountry = jest.fn(() => {
+            return new Promise((resolve, reject) => {
+                resolve({ code: 'AR', longestDistance: 123, reqAmount: 1, name: 'Argentina' });
+            });
+        });
+
+        persistanceService.getMostRequestedCountry = jest.fn(() => {
+            return new Promise((resolve, reject) => {
+                reject({ message: 'error' });
+            });
+        });
+
+        const promise = ipInfoService.getStatistics();
+
+        return promise.then((resp) => {
+            expect(true).toBeFalsy();
+        }).catch((err) => {
+            const { message } = err;
+            expect(message).toEqual('error');
+        });
+    });
+
+    test('IP Info service - Statistics getMostRequestedCountry well', () => {
+
+        persistanceService.getLongestDistanceCountry = jest.fn(() => {
+            return new Promise((resolve, reject) => {
+                resolve({ code: 'AR', longestDistance: 123090, reqAmount: 1, name: 'Argentina' });
+            });
+        });
+
+        persistanceService.getMostRequestedCountry = jest.fn(() => {
+            return new Promise((resolve, reject) => {
+                resolve({ code: 'US', longestDistance: 1232, reqAmount: 1123, name: 'United States' });
+            });
+        });
+
+        const promise = ipInfoService.getStatistics();
+
+        return promise.then((resp) => {
+            const { longest_distance, most_traced } = resp;
+            const { country: countryL, value: valueL } = longest_distance;
+            const { country: countryR, value: valueR } = most_traced;
+
+            expect(countryL).toBe('Argentina');
+            expect(valueL).toBe(123090);
+
+            expect(countryR).toBe('United States');
+            expect(valueR).toBe('1123');
+        }).catch((err) => {
+            expect(true).toBeFalsy();
+        });
+    });
+
 });
