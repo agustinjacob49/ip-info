@@ -10,69 +10,54 @@ export class PersistanceService {
     }
 
     async updateStatistics(code: string, distanceActual: number, name: string): Promise<boolean> {
-        try {
-            // Get actual country
-            const country: Country | null = await this.countryRepository.getByCode(code);
-            let distanceToSave = distanceActual;
-            let amountReqToSave = 1;
-            if (country) {
-                const { longestDistance: distanceSaved, reqAmount: reqAmountSaved } = country;
+        // Get actual country
+        const country: Country | null = await this.countryRepository.getByCode(code);
+        let distanceToSave = distanceActual;
+        let amountReqToSave = 1;
+        if (country) {
+            const { longestDistance: distanceSaved, reqAmount: reqAmountSaved } = country;
 
-                distanceToSave = distanceSaved < distanceActual ? distanceActual : distanceSaved;
-                amountReqToSave = reqAmountSaved;
-                amountReqToSave++
-            }
-
-            const countryToSave: Country = {
-                code,
-                name,
-                longestDistance: distanceToSave,
-                reqAmount: amountReqToSave
-            }
-
-            return this.countryRepository.saveData(countryToSave);
-        } catch (err) {
-            console.log(err);
-            throw err;
+            distanceToSave = distanceSaved < distanceActual ? distanceActual : distanceSaved;
+            amountReqToSave = reqAmountSaved;
+            amountReqToSave++
         }
+
+        const countryToSave: Country = {
+            code,
+            name,
+            longestDistance: distanceToSave,
+            reqAmount: amountReqToSave
+        }
+
+        return this.countryRepository.saveData(countryToSave);
     }
 
     async getMostRequestedCountry(): Promise<Country | undefined> {
-        try {
-            const items = await this.countryRepository.getAll() as Array<Country>;
-            const arrayNew = [...items];
+        const items = await this.countryRepository.getAll() as Array<Country>;
+        const arrayNew = [...items];
 
-            arrayNew.sort(function (a: Country, b: Country) {
-                const { reqAmount: reqAmountA } = a;
-                const { reqAmount: reqAmountB } = b;
+        arrayNew.sort(function (a: Country, b: Country) {
+            const { reqAmount: reqAmountA } = a;
+            const { reqAmount: reqAmountB } = b;
 
-                return reqAmountA - reqAmountB;
-            });
+            return reqAmountA - reqAmountB;
+        });
 
-            const result: Country | undefined = arrayNew.pop();
-            return result;
-        } catch (err) {
-            console.log(err);
-            throw err;
-        }
+        const result: Country | undefined = arrayNew.pop();
+        return result;
     }
 
     async getLongestDistanceCountry(): Promise<Country | undefined> {
-        try {
-            const items = await this.countryRepository.getAll() as Array<Country>;
-            const arrayNew = [...items];
+        const items = await this.countryRepository.getAll() as Array<Country>;
+        const arrayNew = [...items];
 
-            arrayNew.sort(function (a: Country, b: Country) {
-                const { longestDistance: longestDistanceA } = a;
-                const { longestDistance: longestDistanceB } = b;
+        arrayNew.sort(function (a: Country, b: Country) {
+            const { longestDistance: longestDistanceA } = a;
+            const { longestDistance: longestDistanceB } = b;
 
-                return longestDistanceA - longestDistanceB;
-            });
-            const result: Country | undefined = arrayNew.pop();
-            return result;
-        } catch (err) {
-            console.log(err);
-            throw err;
-        }
+            return longestDistanceA - longestDistanceB;
+        });
+        const result: Country | undefined = arrayNew.pop();
+        return result;
     }
 }

@@ -9,7 +9,7 @@ const apiLayerURI = 'https://api.apilayer.com/fixer/latest';
 export class CurrencyClient {
   async getCurrencyData(currency: string): Promise<any> {
     try {
-      const { data } = await axios.get<any>(
+      const { data, status } = await axios.get<any>(
         `${apiLayerURI}?symbols=${USD}&base=${currency}`,
         {
           headers: {
@@ -18,15 +18,15 @@ export class CurrencyClient {
           },
         },
       );
+      console.log("data", data);
+      console.log("status", status);
+      
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log('error message: ', error.message);
-        throw error;
-      } else {
-        console.log('unexpected error: ', error);
-        throw error;
-      }
+    } catch (err: any) {
+      const { data } = err;
+      const { message } = data || {};
+      const errorMessage = message || err.message || 'undefined error';
+      throw new Error(`Something went wrong at CurrencyClient - getCurrencyData - ${errorMessage}`);
     }
   }
 }

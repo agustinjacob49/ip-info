@@ -12,26 +12,21 @@ export class CurrencyService {
     }
 
     async getCurrencyData(currency: string): Promise<Array<CurrencyDTO>> {
-        try {
-            const { base, rates: { USD: usdRate } } = await this.currencyClient.getCurrencyData(currency);
-            const symbol = getSymbolFromCurrency(base);
-            const currencies = [
-                {
-                    iso: USD,
-                    symbol: $,
-                    conversion_rate: 1
-                } as CurrencyDTO,
-                {
-                    iso: base,
-                    symbol,
-                    conversion_rate: new Number(usdRate.toFixed(2))
-                } as CurrencyDTO
-            ];
+        const { base, rates: { USD: usdRate } } = await this.currencyClient.getCurrencyData(currency);
+        const symbol = getSymbolFromCurrency(base);
+        const currencies = [
+            {
+                iso: USD,
+                symbol: $,
+                conversion_rate: 1
+            } as CurrencyDTO,
+            {
+                iso: base,
+                symbol,
+                conversion_rate: new Number(usdRate.toFixed(2))
+            } as CurrencyDTO
+        ];
 
-            return currencies;
-        } catch (err) {
-            console.log(err);
-            throw (err);
-        }
+        return currencies;
     }
 }

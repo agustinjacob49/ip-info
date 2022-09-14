@@ -12,61 +12,49 @@ import { CurrencyDTO } from '../dtos/Currency.dto';
         * Transform response.
 */
 export class IPInfoService {
-    constructor(private readonly geolocationService: GeolocationService, private readonly currencyService: CurrencyService, private readonly persistanceService: PersistanceService){
+    constructor(private readonly geolocationService: GeolocationService, private readonly currencyService: CurrencyService, private readonly persistanceService: PersistanceService) {
 
     }
 
     async calculate(ip: string): Promise<ResponseCalculateDTO> {
-        
-        try{
-            //Call to geolocationservice
-            const geoLocationData: GeoLocationDTO = await this.geolocationService.getGeoLocationData(ip);
+        //Call to geolocationservice
+        const geoLocationData: GeoLocationDTO = await this.geolocationService.getGeoLocationData(ip);
 
-            const { currency, code, distance_to_usa: distance, name } = geoLocationData;
+        const { currency, code, distance_to_usa: distance, name } = geoLocationData;
 
-            //Call Currency service
-            const currencyData: Array<CurrencyDTO> = await this.currencyService.getCurrencyData(currency);
+        //Call Currency service
+        const currencyData: Array<CurrencyDTO> = await this.currencyService.getCurrencyData(currency);
 
-            //Update statistics
-            await this.persistanceService.updateStatistics(code, distance, name);
+        //Update statistics
+        await this.persistanceService.updateStatistics(code, distance, name);
 
-            return {
-                ...geoLocationData,
-                currencies : currencyData,
-            };
-        } catch(err) {
-            console.log(err);
-            throw(err);
-        }
+        return {
+            ...geoLocationData,
+            currencies: currencyData,
+        };
     }
 
-    async getStatistics() : Promise<ResponseStatisticsDTO> {
-        try{
-            //Update statistics
-            const mostRequestCountry: Country | undefined = await this.persistanceService.getMostRequestedCountry();
-            const highestDistanceCountry: Country | undefined = await this.persistanceService.getLongestDistanceCountry();
+    async getStatistics(): Promise<ResponseStatisticsDTO> {
+        //Update statistics
+        const mostRequestCountry: Country | undefined = await this.persistanceService.getMostRequestedCountry();
+        const highestDistanceCountry: Country | undefined = await this.persistanceService.getLongestDistanceCountry();
 
-            if (mostRequestCountry && highestDistanceCountry){
-                const { name: nameRequested, reqAmount: req_amountRequested } = mostRequestCountry;
-                const { name: nameDistance, longestDistance: distance_amountDistance } = highestDistanceCountry;
-                
-                return {
-                    longest_distance: {
-                        country: nameDistance,
-                        value: distance_amountDistance 
-                    },
-                    most_traced: {
-                        country: nameRequested, 
-                        value: req_amountRequested.toString(),
-                    }
-                };
-            } else {
-                throw new Error('Cant find elements - Please check DB access or maybe its empty');
-            }
-           
-        } catch(err) {
-            console.log(err);
-            throw(err);
+        if (mostRequestCountry && highestDistanceCountry) {
+            const { name: nameRequested, reqAmount: req_amountRequested } = mostRequestCountry;
+            const { name: nameDistance, longestDistance: distance_amountDistance } = highestDistanceCountry;
+
+            return {
+                longest_distance: {
+                    country: nameDistance,
+                    value: distance_amountDistance
+                },
+                most_traced: {
+                    country: nameRequested,
+                    value: req_amountRequested.toString(),
+                }
+            };
+        } else {
+            throw new Error('Cant find elements - Please check DB access or maybe its empty');
         }
     }
 }

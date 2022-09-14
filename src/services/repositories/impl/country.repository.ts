@@ -1,3 +1,4 @@
+import { AWSError } from "aws-sdk";
 import { GetItemInput } from "aws-sdk/clients/dynamodb";
 import { SingletonDB } from "../../../common/db";
 import { countryDTOtoDynamoDBDTO, dynamoDbObjetToCountryMapper } from "../../../common/utils";
@@ -20,13 +21,15 @@ export class CountryRepository {
                 const { Item: item } = res;
                 return item ? dynamoDbObjetToCountryMapper(item) : null;
             });
-        } catch (err) {
-            console.log(err);
-            throw err;
+        } catch (err: any) {
+            const { data } = err;
+            const { message } = data || {};
+            const errorMessage = message || err.message || 'undefined error';
+            throw new Error(`Something went wrong at CountryRepository - getByCode - ${errorMessage}`);
         }
     }
 
-    public async getAll(): Promise<Array<Country>>{
+    public async getAll(): Promise<Array<Country>> {
         const params = {
             TableName: SCHEMA as string,
             ProjectionExpression: 'code, longest_distance_req, #name, req_amount',
@@ -36,12 +39,14 @@ export class CountryRepository {
         try {
             const result = await SingletonDB.getInstance().ddb.scan(params);
             return result.promise().then((response) => {
-                const { Items : items } = response;
-                return items ? items.map( (e) => (dynamoDbObjetToCountryMapper(e))) : [];
+                const { Items: items } = response;
+                return items ? items.map((e) => (dynamoDbObjetToCountryMapper(e))) : [];
             });
-        } catch (err) {
-            console.log(err);
-            throw err;
+        } catch (err: any) {
+            const { data } = err;
+            const { message } = data || {};
+            const errorMessage = message || err.message || 'undefined error';
+            throw new Error(`Something went wrong at CountryRepository - getAll - ${errorMessage}`);
         }
     }
 
@@ -58,9 +63,11 @@ export class CountryRepository {
             return response.promise().then((res) => {
                 return true;
             });
-        } catch (err) {
-            console.log(err);
-            throw err;
+        } catch (err: any) {
+            const { data } = err;
+            const { message } = data || {};
+            const errorMessage = message || err.message || 'undefined error';
+            throw new Error(`Something went wrong at CountryRepository - saveData- ${errorMessage}`);
         }
     }
 }

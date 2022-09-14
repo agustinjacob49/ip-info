@@ -49,7 +49,7 @@ const getDistanceTwoPoints = (lat1: number, lon1: number, lat2: number, lon2: nu
 	}
 }
 
-const dynamoDbObjetToCountryMapper = (item: DynamoDBCountryDTO): Country => {
+const dynamoDbObjetToCountryMapper = (item: any): Country => {
 	const { code: { S: code }, longest_distance_req: { N: longestDistance }, req_amount: { N: reqAmount }, name: { S: name } } = item;
 
 	const country: Country = {
@@ -76,8 +76,22 @@ const countryDTOtoDynamoDBDTO = (countryData: Country): DynamoDBCountryDTO => {
 	return newItem;
 }
 
+const isInvalidIPaddress = (ipaddress: string) => {  
+
+	if(ipaddress == null || ipaddress == undefined){
+		return true;
+	}
+
+	if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {  
+		return false
+	}
+
+	return (true)  
+  }  
+
 export {
 	getDistanceTwoPoints,
 	dynamoDbObjetToCountryMapper,
-	countryDTOtoDynamoDBDTO
+	countryDTOtoDynamoDBDTO,
+	isInvalidIPaddress
 }

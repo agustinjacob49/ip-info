@@ -17,14 +17,11 @@ export class IPApiClient {
         },
       );
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log('error message: ', error.message);
-        throw error;
-      } else {
-        console.log('unexpected error: ', error);
-        throw error;
-      }
+    } catch (err: any) {
+      const { data } = err;
+      const { message } = data || {};
+      const errorMessage = message || err.message || 'undefined error';
+      throw new Error(`Something went wrong at IPApiClient - getGeoLocation - ${errorMessage}`);
     }
   }
 }
