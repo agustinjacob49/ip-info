@@ -1,5 +1,6 @@
 export interface Country {
-    uuid: string,
-    longest_distance: number,
-    requests_amount: number,
+    code: string,
+    longestDistance: number,
+    reqAmount: number,
+    name: string,
 }

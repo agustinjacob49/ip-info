@@ -9,7 +9,7 @@ const apiLayerURI = 'https://api.apilayer.com/fixer/latest';
 export class CurrencyClient {
   async getCurrencyData(currency: string): Promise<any> {
     try {
-      const { data, status } = await axios.get<any>(
+      const { data } = await axios.get<any>(
         `${apiLayerURI}?symbols=${USD}&base=${currency}`,
         {
           headers: {
@@ -18,19 +18,14 @@ export class CurrencyClient {
           },
         },
       );
-
-      console.log(JSON.stringify(data, null, 4));
-
-      console.log('response status is: ', status);
-
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log('error message: ', error.message);
-        return error.message;
+        throw error;
       } else {
         console.log('unexpected error: ', error);
-        return 'An unexpected error occurred';
+        throw error;
       }
     }
   }

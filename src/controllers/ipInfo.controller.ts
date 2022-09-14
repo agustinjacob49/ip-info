@@ -1,6 +1,6 @@
 import { route, POST } from 'awilix-express';
 import { Request, Response } from 'express';
-import { RequestPayloadDTO } from '../common/Request.dto';
+import { RequestPayloadDTO } from '../dtos/Request.dto';
 import { IPInfoService } from '../services/ipInfo.service';
 
 
@@ -18,7 +18,7 @@ export class IpInfoController {
             res.send(result);
         }).catch((err) => {
             console.log(err);
-            res.send(err);
+            res.status(500);
         })
     }
 }

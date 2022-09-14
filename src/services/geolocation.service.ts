@@ -1,6 +1,7 @@
 import { LONG_NY, LAT_NY } from '../common/constants';
 import { getDistanceTwoPoints } from '../common/utils';
 import { IPApiClient } from '../clients/ipApi.client';
+import { GeoLocationDTO } from '../dtos/Geolocation.dto';
 
 /*
     Manage the methods of geolocation - > 
@@ -12,20 +13,25 @@ export class GeolocationService {
 
     }
 
-    async getGeoLocationData(ip: string): Promise<any> {
-        const geoLocationData = await this.ipApiClient.getGeoLocation(ip);
-        const { country, countryCode, lat, lon, currency } = geoLocationData;
+    async getGeoLocationData(ip: string): Promise<GeoLocationDTO> {
+        try {
+            const geoLocationData = await this.ipApiClient.getGeoLocation(ip);
+            const { country, countryCode, lat, lon, currency } = geoLocationData;
 
-        const distance = getDistanceTwoPoints(LAT_NY, LONG_NY, lat, lon, 'N');
+            const distance = getDistanceTwoPoints(LAT_NY, LONG_NY, lat, lon, 'N');
 
-        return {
-            ip,
-            name: country,
-            code: countryCode,
-            currency: currency,
-            distance_to_usa: new Number(distance.toFixed(2)),
-            lat,
-            lon,
+            return {
+                ip,
+                name: country,
+                code: countryCode,
+                currency: currency,
+                distance_to_usa: new Number(distance.toFixed(2)) as number,
+                lat,
+                lon,
+            }
+        } catch (err) {
+            console.log(err);
+            throw (err);
         }
     }
 }

@@ -1,9 +1,11 @@
 import { GetItemInput } from "aws-sdk/clients/dynamodb";
 import { SingletonDB } from "../../../common/db";
+import { countryDTOtoDynamoDBDTO, dynamoDbObjetToCountryMapper } from "../../../common/utils";
+import { Country } from '../domain/country';
 
 const SCHEMA = process.env.SCHEMA;
 export class CountryRepository {
-    public async getByCode(code: string): Promise<any> {
+    public async getByCode(code: string): Promise<Country | null> {
         const params: GetItemInput = {
             TableName: SCHEMA as string,
             Key: {
@@ -14,15 +16,17 @@ export class CountryRepository {
         };
         try {
             const response = await SingletonDB.getInstance().ddb.getItem(params);
-            return response.promise().then((item) => {
-                return item;
+            return response.promise().then((res) => {
+                const { Item: item } = res;
+                return item ? dynamoDbObjetToCountryMapper(item) : null;
             });
         } catch (err) {
-            return err;
+            console.log(err);
+            throw err;
         }
     }
 
-    public async getAll() {
+    public async getAll(): Promise<Array<Country>>{
         const params = {
             TableName: SCHEMA as string,
             ProjectionExpression: 'code, longest_distance_req, #name, req_amount',
@@ -33,29 +37,30 @@ export class CountryRepository {
             const result = await SingletonDB.getInstance().ddb.scan(params);
             return result.promise().then((response) => {
                 const { Items : items } = response;
-                return items;
+                return items ? items.map( (e) => (dynamoDbObjetToCountryMapper(e))) : [];
             });
         } catch (err) {
-            return err;
+            console.log(err);
+            throw err;
         }
     }
 
 
-    public async saveData(countryData: any) {
-
+    public async saveData(countryData: Country): Promise<boolean> {
         const params = {
             TableName: SCHEMA as string,
             Item: {
-                ...countryData
+                ...countryDTOtoDynamoDBDTO(countryData)
             }
         };
         try {
             const response = await SingletonDB.getInstance().ddb.putItem(params);
-            return response.promise().then((item) => {
-                return item;
+            return response.promise().then((res) => {
+                return true;
             });
         } catch (err) {
-            return err;
+            console.log(err);
+            throw err;
         }
     }
 }
