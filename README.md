@@ -29,6 +29,10 @@ API who returns geolocalization and currency info giving an IP adresses
 
 - Requests handling
   - Axios
+  
+- Cache
+   - axios cache control
+   - Cache control headers in responses
 
 - Branching model
   - gitflow
