@@ -27,6 +27,9 @@ API who returns geolocalization and currency info giving an IP adresses
   - ts-jest
   - axios-mock
 
+- Requests handling
+  - Axios
+
 - Branching model
   - gitflow
 
