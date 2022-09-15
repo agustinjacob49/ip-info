@@ -24,6 +24,7 @@
     "awilix-express": "^7.0.0",
     "aws-sdk": "^2.1214.0",
     "axios": "^0.27.2",
+    "axios-cache-adapter": "^2.7.3",
     "currency-symbol-map": "^5.1.0",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
@@ -53,6 +54,11 @@
     "preset": "ts-jest",
     "globalSetup": "./node_modules/@shelf/jest-dynamodb/lib/setup.js",
     "globalTeardown": "./node_modules/@shelf/jest-dynamodb/lib/teardown.js",
-    "collectCoverageFrom": ["src/services/*.ts", "src/common/*.ts", "src/clients/*.ts", "!src/common/db.ts"]
+    "collectCoverageFrom": [
+      "src/services/*.ts",
+      "src/common/*.ts",
+      "src/clients/*.ts",
+      "!src/common/db.ts"
+    ]
   }
 }
