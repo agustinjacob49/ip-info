@@ -14,6 +14,14 @@ try {
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+    const cacheTime = 120;
+    res.set({
+      'Cache-Control': `max-age=${cacheTime}`
+    });
+    next();
+});
+
 //Services IOC
 loadDependencies(app);
 
