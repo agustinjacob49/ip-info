@@ -57,6 +57,8 @@ For development enviroment
 
 # Postman collecton
 
+https://github.com/agustinjacob49/ip-info/blob/main/IP-INFO.postman_collection.json
+
 # Endpoints
 
 /ping
