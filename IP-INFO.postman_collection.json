@@ -1,0 +1,87 @@
+{
+	"info": {
+		"_postman_id": "dc785f64-8db4-4318-9080-d97bcf0290f3",
+		"name": "IP-INFO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://ec2-18-230-187-62.sa-east-1.compute.amazonaws.com:8080/ping",
+					"protocol": "http",
+					"host": [
+						"ec2-18-230-187-62",
+						"sa-east-1",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"port": "8080",
+					"path": [
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Statistics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://ec2-18-230-187-62.sa-east-1.compute.amazonaws.com:8080/statistics",
+					"protocol": "http",
+					"host": [
+						"ec2-18-230-187-62",
+						"sa-east-1",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"port": "8080",
+					"path": [
+						"statistics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post trace",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"ip\":\"47.20.156.156\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://ec2-18-230-187-62.sa-east-1.compute.amazonaws.com:8080/traces",
+					"protocol": "http",
+					"host": [
+						"ec2-18-230-187-62",
+						"sa-east-1",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"port": "8080",
+					"path": [
+						"traces"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
